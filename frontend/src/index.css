@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+    color-scheme: light;
+}
+
+:root {
+    --primary-green: #2E7D32;
+    --secondary-green: #8BC34A;
+    --light-green: #DCEDC8;
+    --accent-orange: #FF8A65;
+    --neutral-bg: #F9F9F9;
+    --text-main: #333333;
+    --text-muted: #777777;
+    --border-light: #E0E0E0;
+    --success-green: #43A047;
+    --alert-red: #D84315;
+}
+
+body {
+    background-color: var(--neutral-bg);
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.app {
+    width: 80%;
+    margin: auto;
+}
+
+@keyframes fadeIn{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+ul {
+    list-style: none;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn:hover {
+    background-color: var(--secondary-green);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-green);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-green);
+}
+
+.btn-accent {
+    background-color: var(--accent-orange);
+}
+
+.btn-accent:hover {
+    background-color: #FF7043;
+}
+
+.text-success {
+    color: var(--success-green);
+}
+
+.text-muted {
+    color: var(--text-muted);
+}
+
+.bg-light {
+    background-color: var(--light-green);
+}
+
+.border-light {
+    border: 1px solid var(--border-light);
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 10px 0;
+}
+
+.alert-success {
+    background-color: var(--light-green);
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+}
+
+.alert-error {
+    background-color: #FFEBEE;
+    color: var(--alert-red);
+    border: 1px solid var(--alert-red);
+}
