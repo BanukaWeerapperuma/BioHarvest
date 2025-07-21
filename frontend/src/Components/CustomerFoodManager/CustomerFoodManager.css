@@ -1,0 +1,478 @@
+.customer-food-manager-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.customer-food-manager {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.customer-food-manager-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+
+.customer-food-manager-header h2 {
+    color: #333;
+    margin: 0;
+    font-size: 24px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.close-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.customer-food-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.add-img-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-img-upload p {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.add-img-upload label {
+    cursor: pointer;
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.3s;
+}
+
+.add-img-upload label:hover {
+    border-color: #4CAF50;
+}
+
+.add-img-upload img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.add-product-name,
+.add-product-description {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.add-product-name p,
+.add-product-description p {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.add-product-name input,
+.add-product-description textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.add-product-name input:focus,
+.add-product-description textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.add-category-price {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.add-category,
+.add-price {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.add-category p,
+.add-price p {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.add-category select,
+.add-price input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.add-category select:focus,
+.add-price input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* SLS Certificate Upload */
+.add-sls-certificate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-sls-certificate p {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.add-sls-certificate label {
+    cursor: pointer;
+    border: 2px dashed #2196F3;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.3s;
+}
+
+.add-sls-certificate label:hover {
+    border-color: #1976D2;
+}
+
+.add-sls-certificate img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.add-btn,
+.cancel-btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.add-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.add-btn:hover {
+    background-color: #45a049;
+}
+
+.add-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.cancel-btn {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.cancel-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.customer-food-list {
+    margin-top: 40px;
+    border-top: 2px solid #f0f0f0;
+    padding-top: 30px;
+}
+
+.customer-food-list h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.food-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.food-item-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.food-item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.food-item-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.food-item-info {
+    padding: 15px;
+}
+
+.food-item-info h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.food-item-info p {
+    margin: 4px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.food-item-actions {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.edit-btn,
+.delete-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.edit-btn {
+    background-color: #2196F3;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #1976D2;
+}
+
+.delete-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Certificate Status and Actions */
+.certificate-status {
+    margin-top: 8px;
+}
+
+.cert-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.cert-badge.verified {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.cert-badge.pending {
+    background-color: #FF9800;
+    color: white;
+}
+
+.view-cert-btn,
+.remove-cert-btn,
+.upload-cert-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.view-cert-btn {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.view-cert-btn:hover {
+    background-color: #138496;
+}
+
+.remove-cert-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.remove-cert-btn:hover {
+    background-color: #c82333;
+}
+
+.upload-cert-btn {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.upload-cert-btn:hover {
+    background-color: #e0a800;
+}
+
+.upload-cert-section {
+    flex: 1;
+}
+
+/* Certificate Modal Styles */
+.certificate-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.certificate-modal {
+    background: white;
+    border-radius: 12px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.certificate-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    background: #f8f9fa;
+}
+
+.certificate-modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.certificate-modal-content {
+    padding: 20px;
+    text-align: center;
+}
+
+.certificate-image {
+    max-width: 100%;
+    max-height: 60vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.verification-info {
+    margin-top: 15px;
+    padding: 10px;
+    background: #e8f5e8;
+    border-radius: 6px;
+    border-left: 4px solid #28a745;
+}
+
+.verification-info p {
+    margin: 5px 0;
+    font-size: 12px;
+    color: #2e7d32;
+}
+
+@media (max-width: 768px) {
+    .customer-food-manager {
+        width: 95%;
+        padding: 20px;
+    }
+    
+    .add-category-price {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+    }
+    
+    .food-items-grid {
+        grid-template-columns: 1fr;
+    }
+} 
