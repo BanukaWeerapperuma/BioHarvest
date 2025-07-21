@@ -1,0 +1,30 @@
+.home-page-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .home-page-wrapper {
+    padding: 0 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-page-wrapper {
+    padding: 0 2px;
+  }
+}
+
+/* Section spacing for Home page */
+.home-page-wrapper > * {
+  margin-bottom: 32px;
+}
+
+@media (max-width: 600px) {
+  .home-page-wrapper > * {
+    margin-bottom: 18px;
+  }
+}
