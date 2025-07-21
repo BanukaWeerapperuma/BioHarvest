@@ -1,0 +1,411 @@
+/* ========== Enrolled Course Card - Minimal Design ========== */
+.enrollment-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== Image Container ========== */
+.enrollment-image-container {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.enrollment-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ========== Status Badge ========== */
+.status-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* ========== Progress Overlay ========== */
+.progress-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 2px solid #4CAF50;
+}
+
+.progress-circle .progress-text {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ========== Content ========== */
+.enrollment-content {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== Category & Level ========== */
+.enrollment-category {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.category-tag,
+.course-level {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.category-tag {
+  background: #667eea;
+  color: white;
+}
+
+.course-level {
+  background: #f0f0f0;
+  color: #666;
+}
+
+/* ========== Title & Description ========== */
+.enrollment-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.enrollment-description {
+  color: #666;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin-bottom: 16px;
+  height: 40px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ========== Meta Information ========== */
+.enrollment-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.meta-icon {
+  font-size: 0.9rem;
+}
+
+/* ========== Progress Section ========== */
+.progress-section {
+  margin-bottom: 16px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4CAF50;
+  border-radius: 3px;
+}
+
+.progress-section .progress-text {
+  font-size: 0.75rem;
+  color: #666;
+  text-align: center;
+}
+
+/* ========== Instructor ========== */
+.enrollment-instructor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f8f8f8;
+  border-radius: 8px;
+}
+
+.instructor-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.instructor-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.instructor-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.instructor-title {
+  color: #666;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========== Continue Learning Button ========== */
+.continue-learning-btn {
+  width: 100%;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 40px;
+}
+
+/* ========== Responsive Design ========== */
+@media (max-width: 768px) {
+  .enrollment-card {
+    border-radius: 8px;
+  }
+
+  .enrollment-image-container {
+    height: 160px;
+  }
+
+  .enrollment-content {
+    padding: 12px;
+  }
+
+  .enrollment-title {
+    font-size: 1rem;
+  }
+
+  .enrollment-description {
+    font-size: 0.8rem;
+    height: 35px;
+  }
+
+  .enrollment-meta {
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .meta-item {
+    font-size: 0.75rem;
+  }
+
+  .enrollment-instructor {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .instructor-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .instructor-name {
+    font-size: 0.75rem;
+  }
+
+  .instructor-title {
+    font-size: 0.65rem;
+  }
+
+  .continue-learning-btn {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .status-badge {
+    top: 8px;
+    left: 8px;
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+
+  .progress-circle {
+    width: 35px;
+    height: 35px;
+  }
+
+  .progress-circle .progress-text {
+    font-size: 0.65rem;
+  }
+
+  .enrollment-category {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .category-tag,
+  .course-level {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+
+  .progress-section {
+    margin-bottom: 12px;
+  }
+
+  .progress-bar {
+    height: 5px;
+    margin-bottom: 4px;
+  }
+
+  .progress-section .progress-text {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .enrollment-image-container {
+    height: 140px;
+  }
+
+  .enrollment-content {
+    padding: 10px;
+  }
+
+  .enrollment-title {
+    font-size: 0.95rem;
+  }
+
+  .enrollment-description {
+    font-size: 0.75rem;
+    height: 30px;
+  }
+
+  .enrollment-meta {
+    gap: 3px;
+    margin-bottom: 10px;
+  }
+
+  .meta-item {
+    font-size: 0.7rem;
+  }
+
+  .enrollment-instructor {
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+
+  .instructor-avatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  .instructor-name {
+    font-size: 0.7rem;
+  }
+
+  .instructor-title {
+    font-size: 0.6rem;
+  }
+
+  .continue-learning-btn {
+    padding: 6px;
+    font-size: 0.8rem;
+  }
+
+  .status-badge {
+    top: 6px;
+    left: 6px;
+    padding: 2px 5px;
+    font-size: 0.65rem;
+  }
+
+  .progress-circle {
+    width: 30px;
+    height: 30px;
+  }
+
+  .progress-circle .progress-text {
+    font-size: 0.6rem;
+  }
+
+  .enrollment-category {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .category-tag,
+  .course-level {
+    padding: 1px 4px;
+    font-size: 0.65rem;
+  }
+
+  .progress-section {
+    margin-bottom: 10px;
+  }
+
+  .progress-bar {
+    height: 4px;
+    margin-bottom: 3px;
+  }
+
+  .progress-section .progress-text {
+    font-size: 0.65rem;
+  }
+} 
