@@ -1,0 +1,282 @@
+.not-found-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.not-found-content {
+  background: white;
+  border-radius: 20px;
+  padding: 60px 40px;
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Error Illustration */
+.error-illustration {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.error-number {
+  font-size: 8rem;
+  font-weight: 900;
+  color: #667eea;
+  line-height: 1;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-icon {
+  font-size: 4rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.3;
+}
+
+/* Error Message */
+.error-message h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.error-message p {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto 40px;
+}
+
+/* Suggestions */
+.suggestions h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.suggestion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.suggestion-card {
+  background: #f8f9fa;
+  padding: 30px 20px;
+  border-radius: 15px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.suggestion-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-color: #667eea;
+}
+
+.suggestion-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.suggestion-card h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.suggestion-card p {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Search Section */
+.search-section {
+  margin-bottom: 40px;
+}
+
+.search-section h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.search-box {
+  display: flex;
+  max-width: 400px;
+  margin: 0 auto;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  font-size: 1rem;
+  outline: none;
+}
+
+.search-button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background: #5a6fd8;
+}
+
+/* Help Section */
+.help-section {
+  margin-bottom: 40px;
+}
+
+.help-section h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.help-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.help-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 25px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.help-link:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: translateY(-2px);
+}
+
+.help-link span {
+  font-size: 1.1rem;
+}
+
+/* Fun Fact */
+.fun-fact {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-align: left;
+}
+
+.fact-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.fun-fact p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.fun-fact strong {
+  color: #ffd700;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .not-found-content {
+    padding: 40px 20px;
+  }
+  
+  .error-number {
+    font-size: 6rem;
+  }
+  
+  .error-icon {
+    font-size: 3rem;
+  }
+  
+  .error-message h1 {
+    font-size: 2rem;
+  }
+  
+  .suggestion-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .help-options {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .fun-fact {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-number {
+    font-size: 4rem;
+  }
+  
+  .error-icon {
+    font-size: 2rem;
+  }
+  
+  .suggestion-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .search-box {
+    flex-direction: column;
+    border-radius: 15px;
+  }
+  
+  .search-input,
+  .search-button {
+    border-radius: 0;
+  }
+  
+  .search-input {
+    border-radius: 15px 15px 0 0;
+  }
+  
+  .search-button {
+    border-radius: 0 0 15px 15px;
+  }
+} 
