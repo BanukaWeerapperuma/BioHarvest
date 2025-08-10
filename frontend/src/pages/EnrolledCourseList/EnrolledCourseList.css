@@ -1,0 +1,446 @@
+/* ========== Enrolled Course List Page ========== */
+.enrolled-course-list-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+/* ========== Header ========== */
+.enrolled-course-list-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 40px 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.enrolled-course-list-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.enrolled-course-list-header p {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+/* ========== Statistics Section ========== */
+.statistics-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: white;
+  padding: 25px 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card h3 {
+  font-size: 2.5rem;
+  color: #667eea;
+  margin: 0 0 10px 0;
+  font-weight: 700;
+}
+
+.stat-card p {
+  color: #7f8c8d;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* ========== Filters Section ========== */
+.filters-section {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 15px 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background: #f8f9fa;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.filter-controls select {
+  flex: 1;
+  min-width: 150px;
+  padding: 12px 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: #f8f9fa;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filter-controls select:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+}
+
+/* ========== Results Info ========== */
+.results-info {
+  text-align: center;
+  margin-bottom: 25px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.results-info p {
+  margin: 0;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+/* ========== Enrolled Course Grid ========== */
+.enrolled-course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+/* ========== Single Course Layout ========== */
+.enrolled-course-grid.single-course {
+  grid-template-columns: 50%;
+  justify-content: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========== Loading & Error States ========== */
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e9ecef;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.error-container h2 {
+  color: #e53e3e;
+  margin-bottom: 15px;
+}
+
+.error-container p {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-container button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.error-container button:hover {
+  transform: translateY(-2px);
+}
+
+/* ========== No Results & No Enrollments ========== */
+.no-results,
+.no-enrollments {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.no-results h3,
+.no-enrollments h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.no-results p,
+.no-enrollments p {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.no-enrollments button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.no-enrollments button:hover {
+  transform: translateY(-2px);
+}
+
+/* ========== Responsive Design ========== */
+@media (max-width: 1024px) {
+  .enrolled-course-list-container {
+    padding: 15px;
+  }
+
+  .enrolled-course-list-header {
+    padding: 30px 15px;
+    margin-bottom: 25px;
+  }
+
+  .enrolled-course-list-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .statistics-section {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+  }
+
+  .stat-card h3 {
+    font-size: 2.2rem;
+  }
+
+  .enrolled-course-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .enrolled-course-grid.single-course {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+  }
+}
+
+@media (max-width: 768px) {
+  .enrolled-course-list-container {
+    padding: 10px;
+  }
+
+  .enrolled-course-list-header {
+    padding: 25px 15px;
+    margin-bottom: 20px;
+  }
+
+  .enrolled-course-list-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .enrolled-course-list-header p {
+    font-size: 1rem;
+  }
+
+  .statistics-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .stat-card {
+    padding: 20px 15px;
+  }
+
+  .stat-card h3 {
+    font-size: 2rem;
+  }
+
+  .filters-section {
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+
+  .filter-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .filter-controls select {
+    min-width: auto;
+  }
+
+  .enrolled-course-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .enrolled-course-grid.single-course {
+    max-width: 100%;
+  }
+
+  .loading-container,
+  .error-container {
+    min-height: 300px;
+    padding: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .enrolled-course-list-header {
+    padding: 20px 15px;
+  }
+
+  .enrolled-course-list-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .statistics-section {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 15px;
+  }
+
+  .stat-card h3 {
+    font-size: 1.8rem;
+  }
+
+  .filters-section {
+    padding: 15px;
+  }
+
+  .search-box input {
+    padding: 12px 15px;
+    font-size: 0.95rem;
+  }
+
+  .filter-controls select {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .loading-container,
+  .error-container {
+    min-height: 250px;
+    padding: 20px;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+  }
+
+  .no-results,
+  .no-enrollments {
+    padding: 40px 15px;
+  }
+
+  .no-results h3,
+  .no-enrollments h3 {
+    font-size: 1.3rem;
+  }
+
+  .no-results p,
+  .no-enrollments p {
+    font-size: 1rem;
+  }
+
+  .no-enrollments button {
+    padding: 12px 25px;
+    font-size: 1rem;
+  }
+}
+
+/* ========== Touch Device Optimizations ========== */
+@media (hover: none) and (pointer: coarse) {
+  .stat-card:hover {
+    transform: none;
+  }
+
+  .error-container button:hover,
+  .no-enrollments button:hover {
+    transform: none;
+  }
+
+  .error-container button:active,
+  .no-enrollments button:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ========== Reduced Motion ========== */
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
+  }
+
+  .stat-card,
+  .error-container button,
+  .no-enrollments button {
+    transition: none;
+  }
+} 
