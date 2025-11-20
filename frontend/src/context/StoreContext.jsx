@@ -1,6 +1,7 @@
 import { createContext, useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 
 export const StoreContext = createContext(null);
@@ -18,6 +19,16 @@ const StoreContextProvider = (props) => {
 
 
         const addToCart = async(itemId) => {
+            // Check available quantity before adding to cart
+            const item = food_list.find(product => product._id === itemId);
+            if (item && item.availableQuantity !== null && item.availableQuantity !== undefined) {
+                const currentCartQuantity = cartItems[itemId] || 0;
+                if (currentCartQuantity + 1 > item.availableQuantity) {
+                    toast.error(`Only ${item.availableQuantity} item(s) available. Cannot add more to cart.`);
+                    return;
+                }
+            }
+            
             if(!cartItems[itemId]){
                 setCartItems((prev)=>({...prev , [itemId]:1}))
                 
@@ -25,7 +36,20 @@ const StoreContextProvider = (props) => {
                 setCartItems((prev)=>({...prev , [itemId]:prev[itemId]+1}))
             }
             if(token){
-                await axios.post(url + "/api/cart/add" , {itemId} , {headers:{token}})
+                const response = await axios.post(url + "/api/cart/add" , {itemId} , {headers:{token}});
+                if (!response.data.success && response.data.message) {
+                    toast.error(response.data.message);
+                    // Revert the cart update if backend validation fails
+                    if(cartItems[itemId]){
+                        setCartItems((prev)=>({...prev , [itemId]:prev[itemId]-1}))
+                    }else{
+                        setCartItems((prev)=>{
+                            const newCart = {...prev};
+                            delete newCart[itemId];
+                            return newCart;
+                        })
+                    }
+                }
             }
 
         }
@@ -44,10 +68,8 @@ const StoreContextProvider = (props) => {
        
         for (const item in cartItems){
             if(cartItems[item]>0){
-                let itemInfo = food_list.find((product) => product._id === item);
-                if (itemInfo && typeof itemInfo.price === 'number') {
-                    totalAmount += itemInfo.price * cartItems[item];
-                }
+                let itemInfo =food_list.find((product) =>product._id===item);
+                totalAmount += itemInfo.price*cartItems[item]
             }
         }
 

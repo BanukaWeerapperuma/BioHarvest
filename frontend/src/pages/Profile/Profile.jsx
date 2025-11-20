@@ -320,11 +320,7 @@ const Profile = () => {
                     <p>Courses</p>
                     <span className="stat-description">Courses enrolled</span>
                   </div>
-                  <div className="stat">
-                    <h3>{loading ? '...' : (userProfile?.stats?.points || 0)}</h3>
-                    <p>Points</p>
-                    <span className="stat-description">Loyalty points earned</span>
-                  </div>
+                  
                 </div>
               </div>
             </div>

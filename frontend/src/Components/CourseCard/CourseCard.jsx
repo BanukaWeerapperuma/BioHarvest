@@ -4,11 +4,18 @@ import { useContext } from 'react';
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
 import { url } from '../../assets/frontend_assets/assets';
-
+import { formatCurrency } from '../../utils/price';
 
 const CourseCard = ({ course, showEnrollButton = true }) => {
   const navigate = useNavigate();
   const { token } = useContext(StoreContext);
+  const authToken = token || localStorage.getItem('token');
+
+  const resolveMediaUrl = (value) => {
+    if (!value) return null;
+    if (value.startsWith('http')) return value;
+    return `${url}/uploads/${value}`;
+  };
 
   // Helper: Discounted price
   const getDiscountedPrice = (course) => {
@@ -39,14 +46,15 @@ const CourseCard = ({ course, showEnrollButton = true }) => {
       alert('Invalid course data');
       return;
     }
+    if (!authToken) {
+      alert('Please login to enroll in courses');
+      return;
+    }
+
     if (course.isFree) {
       try {
-        if (!token) {
-          alert('Please login to enroll in courses');
-          return;
-        }
         const response = await axios.post(`${url}/api/enrollments/courses/${course._id}/enroll`, {}, {
-          headers: { token }
+          headers: { token: authToken }
         });
         if (response.data.success) {
           alert('Successfully enrolled in the course!');
@@ -85,7 +93,7 @@ const CourseCard = ({ course, showEnrollButton = true }) => {
     <div className="enrollment-card">
       <div className="enrollment-image-container">
         <img
-          src={course.image ? `${url}/uploads/${course.image}` : coursePlaceholder}
+          src={resolveMediaUrl(course.image) || coursePlaceholder}
           alt={course.title || 'Course'}
           className="enrollment-image"
           onError={e => { e.target.src = coursePlaceholder; }}
@@ -121,7 +129,7 @@ const CourseCard = ({ course, showEnrollButton = true }) => {
 
         <div className="enrollment-instructor">
           <img
-            src={course.instructor?.avatar ? `${url}/uploads/${course.instructor.avatar}` : avatarPlaceholder}
+            src={resolveMediaUrl(course.instructor?.avatar) || avatarPlaceholder}
             alt={course.instructor?.name || 'Instructor'}
             className="instructor-avatar"
             onError={e => { e.target.src = avatarPlaceholder; }}
@@ -139,11 +147,11 @@ const CourseCard = ({ course, showEnrollButton = true }) => {
             <span>
               {course.discount > 0 && course.price && (
                 <span className="category-tag" style={{ background: '#e53e3e', color: 'white', marginRight: 8, textDecoration: 'line-through' }}>
-                  ${course.price}
+                  {formatCurrency(course.price)}
                 </span>
               )}
               <span className="category-tag" style={{ background: '#764ba2', color: 'white' }}>
-                ${discountedPrice}
+                {formatCurrency(discountedPrice)}
               </span>
             </span>
           )}

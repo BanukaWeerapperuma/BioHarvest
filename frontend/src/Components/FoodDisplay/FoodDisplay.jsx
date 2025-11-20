@@ -14,9 +14,7 @@ const FoodDisplay = ({category}) => {
     }
 
     const filteredFoods = food_list.filter(item => {
-        const categoryMatch = category === "All" || category === item.category;
-        const isVerified = item.slsCertificateVerified === true;
-        return categoryMatch && isVerified;
+        return category === "All" || category === item.category
     })
 
     return (
@@ -43,8 +41,9 @@ const FoodDisplay = ({category}) => {
                         image={item.image}
                         isCustomerAdded={item.isCustomerAdded}
                         slsCertificate={item.slsCertificate}
-                        slsCertificateVerified={item.slsCertificateVerified}
-                        slsCertificateVerifiedAt={item.slsCertificateVerifiedAt}
+                        phone={item.phone}
+                        address={item.address}
+                        availableQuantity={item.availableQuantity}
                     />
                 })}
             </div>
