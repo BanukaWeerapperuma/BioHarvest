@@ -11,7 +11,10 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
         name: "",
         description: "",
         price: "",
-        category: "Fresh Vegetables"
+        category: "Fresh Vegetables",
+        phone: "",
+        address: "",
+        availableQuantity: ""
     });
     const [image, setImage] = useState(false);
     const [slsCertificate, setSlsCertificate] = useState(false);
@@ -28,10 +31,6 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
             toast.error("Please select an image");
             return;
         }
-        if (!slsCertificate && !editingItem) {
-            toast.error("Please upload the SLS Certificate");
-            return;
-        }
 
         try {
             setLoading(true);
@@ -40,11 +39,21 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
             formData.append("description", data.description);
             formData.append("price", Number(data.price));
             formData.append("category", data.category);
+            if (data.phone) {
+                formData.append("phone", data.phone);
+            }
+            if (data.address) {
+                formData.append("address", data.address);
+            }
+            if (data.availableQuantity) {
+                formData.append("availableQuantity", Number(data.availableQuantity));
+            }
             if (image) {
                 formData.append("image", image);
             }
-            if (slsCertificate) {
-                formData.append("slsCertificate", slsCertificate);
+            // Include certificate when creating new food item (not when editing)
+            if (!editingItem && slsCertificate) {
+                formData.append("certificate", slsCertificate);
             }
             
             let response;
@@ -86,11 +95,16 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
             name: "",
             description: "",
             price: "",
-            category: "Fresh Vegetables"
+            category: "Fresh Vegetables",
+            phone: "",
+            address: "",
+            availableQuantity: ""
         });
         setImage(false);
         setSlsCertificate(false);
         setEditingItem(null);
+        setShowCertificateModal(false);
+        setSelectedCertificate(null);
         const fileInput = document.getElementById('customer-image');
         const certInput = document.getElementById('customer-certificate');
         if (fileInput) fileInput.value = '';
@@ -116,15 +130,11 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
             name: item.name,
             description: item.description,
             price: item.price.toString(),
-            category: item.category
+            category: item.category,
+            phone: item.phone || "",
+            address: item.address || "",
+            availableQuantity: item.availableQuantity ? item.availableQuantity.toString() : ""
         });
-        setSlsCertificate(item.slsCertificate ? {
-            name: item.slsCertificate.name,
-            size: item.slsCertificate.size,
-            type: item.slsCertificate.type,
-            lastModified: item.slsCertificate.lastModified,
-            webkitRelativePath: item.slsCertificate.webkitRelativePath
-        } : false);
     }
 
     const handleDelete = async (itemId) => {
@@ -148,8 +158,9 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
         }
     }
 
-    const uploadSLSCertificate = async (foodId) => {
-        if (!slsCertificate) {
+    const uploadSLSCertificate = async (foodId, fileToUpload = null) => {
+        const file = fileToUpload || slsCertificate;
+        if (!file) {
             toast.error("Please select an SLS certificate image");
             return;
         }
@@ -157,8 +168,9 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
         try {
             setLoading(true);
             const formData = new FormData();
-            formData.append('certificate', slsCertificate);
+            formData.append('certificate', file);
 
+            console.log('Uploading certificate for foodId:', foodId);
             const response = await axios.post(`${url}/api/food/${foodId}/sls-certificate`, formData, {
                 headers: { 
                     token,
@@ -166,18 +178,30 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
                 }
             });
             
+            console.log('Certificate upload response:', response.data);
+            
             if (response.data.success) {
                 toast.success(response.data.message);
                 setSlsCertificate(false);
+                // Clear file inputs
                 const certInput = document.getElementById('customer-certificate');
                 if (certInput) certInput.value = '';
-                fetchCustomerFoods();
+                // Clear item-specific inputs
+                const itemCertInput = document.getElementById(`cert-upload-${foodId}`);
+                if (itemCertInput) itemCertInput.value = '';
+                // Refresh both customer foods and main food list
+                await fetchCustomerFoods();
+                if (onFoodAdded) onFoodAdded(); // This will refresh the main food list
             } else {
                 toast.error(response.data.message || "Failed to upload certificate");
             }
         } catch (error) {
             console.error('Error uploading certificate:', error);
-            toast.error("Error uploading certificate");
+            if (error.response && error.response.data) {
+                toast.error(error.response.data.message || "Error uploading certificate");
+            } else {
+                toast.error("Error uploading certificate. Please try again.");
+            }
         } finally {
             setLoading(false);
         }
@@ -185,15 +209,18 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
 
     const viewCertificate = async (foodId) => {
         try {
+            console.log('Viewing certificate for foodId:', foodId);
             const response = await axios.get(`${url}/api/food/${foodId}/sls-certificate`, {
                 headers: { token }
             });
             
-            if (response.data.success) {
+            console.log('Certificate response:', response.data);
+            
+            if (response.data.success && response.data.data && response.data.data.imageUrl) {
                 setSelectedCertificate({
                     foodId,
                     imageUrl: response.data.data.imageUrl,
-                    certificate: response.data.data.certificate
+                    certificate: response.data.data.certificate || {}
                 });
                 setShowCertificateModal(true);
             } else {
@@ -201,26 +228,38 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
             }
         } catch (error) {
             console.error('Error fetching certificate:', error);
-            toast.error("Error loading certificate");
+            if (error.response && error.response.data) {
+                toast.error(error.response.data.message || "Error loading certificate");
+            } else {
+                toast.error("Error loading certificate. Please try again.");
+            }
         }
     }
 
     const removeCertificate = async (foodId) => {
         if (window.confirm('Are you sure you want to remove this SLS certificate?')) {
             try {
+                console.log('Removing certificate for foodId:', foodId);
                 const response = await axios.delete(`${url}/api/food/${foodId}/sls-certificate`, {
                     headers: { token }
                 });
                 
+                console.log('Remove certificate response:', response.data);
+                
                 if (response.data.success) {
                     toast.success(response.data.message);
-                    fetchCustomerFoods();
+                    await fetchCustomerFoods();
+                    if (onFoodAdded) onFoodAdded(); // Refresh main food list
                 } else {
                     toast.error(response.data.message || "Failed to remove certificate");
                 }
             } catch (error) {
                 console.error('Error removing certificate:', error);
-                toast.error("Error removing certificate");
+                if (error.response && error.response.data) {
+                    toast.error(error.response.data.message || "Error removing certificate");
+                } else {
+                    toast.error("Error removing certificate. Please try again.");
+                }
             }
         }
     }
@@ -244,7 +283,15 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
                         <p>Upload image</p>
                         <label htmlFor="customer-image">
                             <img 
-                                src={!image ? assets.upload_area : URL.createObjectURL(image)} 
+                                src={
+                                    image 
+                                        ? URL.createObjectURL(image) 
+                                        : editingItem && editingItem.image && editingItem.image.startsWith('http')
+                                        ? editingItem.image
+                                        : editingItem && editingItem.image
+                                        ? `${url}/uploads/${editingItem.image}`
+                                        : assets.upload_area
+                                } 
                                 alt="" 
                             />
                         </label>
@@ -310,12 +357,114 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
                         </div>
                     </div>
                     
+                    <div className='add-contact-info'>
+                        <div className='add-phone'>
+                            <p>Phone Number</p>
+                            <input 
+                                type="text" 
+                                name='phone' 
+                                onChange={onChangeHandler} 
+                                value={data.phone} 
+                                placeholder='+94 76 123 4567' 
+                            />
+                        </div>
+                        <div className='add-quantity'>
+                            <p>Available Quantity</p>
+                            <input 
+                                type="Number" 
+                                name='availableQuantity' 
+                                onChange={onChangeHandler} 
+                                value={data.availableQuantity} 
+                                placeholder='10' 
+                                min="0"
+                            />
+                        </div>
+                    </div>
+                    
+                    <div className='add-address'>
+                        <p>Address</p>
+                        <textarea 
+                            name='address' 
+                            onChange={onChangeHandler} 
+                            value={data.address} 
+                            rows={3} 
+                            placeholder='Enter your address here' 
+                        />
+                    </div>
+                    
                     <div className='add-sls-certificate'>
-                        <p>SLS Certificate (Required)</p>
+                        <p>SLS Certificate (Optional)</p>
+                        {!editingItem && (
+                            <p style={{ fontSize: '12px', color: '#666', marginBottom: '10px', fontStyle: 'italic' }}>
+                                You can upload the SLS certificate now, or add it later from your food items list.
+                            </p>
+                        )}
+                        {editingItem && editingItem.slsCertificate && editingItem.slsCertificate.url && (
+                            <div style={{ marginBottom: '10px', padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
+                                <p style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>
+                                    Current Certificate: 
+                                    {editingItem.slsCertificate.isVerified && (
+                                        <span style={{ color: 'green', marginLeft: '5px' }}>✓ Verified</span>
+                                    )}
+                                    {!editingItem.slsCertificate.isVerified && (
+                                        <span style={{ color: 'orange', marginLeft: '5px' }}>⏳ Pending Verification</span>
+                                    )}
+                                </p>
+                                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                    <img 
+                                        src={
+                                            editingItem.slsCertificate.url && (editingItem.slsCertificate.url.startsWith('http') || editingItem.slsCertificate.url.startsWith('https'))
+                                                ? editingItem.slsCertificate.url
+                                                : editingItem.slsCertificate.filename
+                                                ? `${url}/uploads/${editingItem.slsCertificate.filename}`
+                                                : assets.upload_area
+                                        }
+                                        alt="Current SLS Certificate" 
+                                        style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', cursor: 'pointer' }}
+                                        onError={(e) => {
+                                            console.error('Error loading certificate thumbnail:', editingItem.slsCertificate.url);
+                                            e.target.src = assets.upload_area;
+                                        }}
+                                        onClick={() => {
+                                            if (editingItem.slsCertificate.url) {
+                                                setSelectedCertificate({
+                                                    foodId: editingItem._id,
+                                                    imageUrl: editingItem.slsCertificate.url,
+                                                    certificate: editingItem.slsCertificate
+                                                });
+                                                setShowCertificateModal(true);
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => viewCertificate(editingItem._id)}
+                                        style={{ padding: '5px 10px', fontSize: '12px', cursor: 'pointer' }}
+                                    >
+                                        View Full
+                                    </button>
+                                </div>
+                                <p style={{ fontSize: '11px', color: '#888', marginTop: '5px' }}>
+                                    Upload a new file below to replace the current certificate
+                                </p>
+                            </div>
+                        )}
                         <label htmlFor="customer-certificate">
                             <img 
-                                src={!slsCertificate ? assets.upload_area : URL.createObjectURL(slsCertificate)} 
-                                alt="" 
+                                src={
+                                    slsCertificate 
+                                        ? URL.createObjectURL(slsCertificate) 
+                                        : editingItem && editingItem.slsCertificate && editingItem.slsCertificate.url && (editingItem.slsCertificate.url.startsWith('http') || editingItem.slsCertificate.url.startsWith('https'))
+                                        ? editingItem.slsCertificate.url
+                                        : editingItem && editingItem.slsCertificate && editingItem.slsCertificate.filename
+                                        ? `${url}/uploads/${editingItem.slsCertificate.filename}`
+                                        : assets.upload_area
+                                } 
+                                alt=""
+                                onError={(e) => {
+                                    console.error('Error loading certificate preview');
+                                    e.target.src = assets.upload_area;
+                                }}
                             />
                         </label>
                         <input 
@@ -324,7 +473,6 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
                             id="customer-certificate" 
                             hidden 
                             accept="image/*"
-                            required={!editingItem}
                         />
                     </div>
                     
@@ -354,7 +502,12 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
                         <div className='food-items-grid'>
                             {customerFoods.map((item) => (
                                 <div key={item._id} className='food-item-card'>
-                                    <img src={`${url}/uploads/${item.image}`} alt={item.name} />
+                                    <img 
+                                        src={item.image && item.image.startsWith('http') 
+                                            ? item.image 
+                                            : `${url}/uploads/${item.image}`} 
+                                        alt={item.name} 
+                                    />
                                     <div className='food-item-info'>
                                         <h4>{item.name}</h4>
                                         <p>${item.price}</p>
@@ -402,16 +555,21 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
                                                     id={`cert-upload-${item._id}`}
                                                     accept="image/*"
                                                     onChange={(e) => {
-                                                        setSlsCertificate(e.target.files[0]);
-                                                        uploadSLSCertificate(item._id);
+                                                        const file = e.target.files[0];
+                                                        if (file) {
+                                                            setSlsCertificate(file);
+                                                            // Upload immediately after file selection
+                                                            uploadSLSCertificate(item._id, file);
+                                                        }
                                                     }}
                                                     style={{ display: 'none' }}
                                                 />
                                                 <label 
                                                     htmlFor={`cert-upload-${item._id}`}
                                                     className='upload-cert-btn'
+                                                    title="Upload SLS Certificate"
                                                 >
-                                                    Upload Cert
+                                                    {loading ? 'Uploading...' : 'Upload Cert'}
                                                 </label>
                                             </div>
                                         )}
@@ -431,16 +589,57 @@ const CustomerFoodManager = ({ onClose, onFoodAdded }) => {
                                 <button className="close-btn" onClick={() => setShowCertificateModal(false)}>✕</button>
                             </div>
                             <div className="certificate-modal-content">
-                                <img 
-                                    src={url + selectedCertificate.imageUrl} 
-                                    alt="SLS Certificate" 
-                                    className="certificate-image"
-                                />
-                                {selectedCertificate.certificate.isVerified && (
-                                    <div className="verification-info">
-                                        <p>✓ Verified by Admin</p>
-                                        <p>Verified on: {new Date(selectedCertificate.certificate.verifiedAt).toLocaleDateString()}</p>
+                                {selectedCertificate.imageUrl ? (
+                                    <>
+                                        <img 
+                                            src={
+                                                selectedCertificate.imageUrl && (selectedCertificate.imageUrl.startsWith('http') || selectedCertificate.imageUrl.startsWith('https'))
+                                                    ? selectedCertificate.imageUrl
+                                                    : selectedCertificate.imageUrl
+                                                    ? `${url}${selectedCertificate.imageUrl.startsWith('/') ? '' : '/'}${selectedCertificate.imageUrl}`
+                                                    : ''
+                                            } 
+                                            alt="SLS Certificate" 
+                                            className="certificate-image"
+                                            style={{maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto'}}
+                                            onLoad={() => {
+                                                console.log('Certificate image loaded successfully:', selectedCertificate.imageUrl);
+                                            }}
+                                            onError={(e) => {
+                                                console.error('Error loading certificate image:', selectedCertificate.imageUrl);
+                                                e.target.style.display = 'none';
+                                                const errorDiv = e.target.parentElement.querySelector('.certificate-error');
+                                                if (errorDiv) {
+                                                    errorDiv.style.display = 'block';
+                                                }
+                                            }}
+                                        />
+                                        <div className="certificate-error" style={{display: 'none', color: 'red', padding: '20px', textAlign: 'center'}}>
+                                            <p>Error loading certificate image.</p>
+                                            <p>URL: {selectedCertificate.imageUrl}</p>
+                                            <p>Please try again or contact support.</p>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div style={{color: 'red', padding: '20px', textAlign: 'center'}}>
+                                        Certificate image not available
                                     </div>
+                                )}
+                                {selectedCertificate.certificate && (
+                                    <>
+                                        {selectedCertificate.certificate.isVerified ? (
+                                            <div className="verification-info">
+                                                <p>✓ Verified by Admin</p>
+                                                {selectedCertificate.certificate.verifiedAt && (
+                                                    <p>Verified on: {new Date(selectedCertificate.certificate.verifiedAt).toLocaleDateString()}</p>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="verification-info not-verified-info">
+                                                <p>⚠ Not SLS Verified - Cannot Purchase</p>
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </div>

@@ -4,6 +4,7 @@ import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
+import { formatCurrency } from "../../utils/price";
 
 const PlaceOrder = () => {
   const navigate = useNavigate();
@@ -259,12 +260,12 @@ const PlaceOrder = () => {
                 <h3>{courseData.courseName}</h3>
                 <div className="enrollment-info">
                   <p>Course Enrollment</p>
-                  <p>${courseData.amount}</p>
+                  <p>{formatCurrency(courseData.amount)}</p>
                 </div>
                 <hr />
                 <div className="enrollment-info">
                   <b>Total</b>
-                  <b>${courseData.amount}</b>
+                  <b>{formatCurrency(courseData.amount)}</b>
                 </div>
               </div>
             </div>
@@ -272,19 +273,19 @@ const PlaceOrder = () => {
             <div>
               <div className="cart-total-details">
                 <p>Subtotals</p>
-                <p>${getTotalCartAmount()}</p>
+                <p>{formatCurrency(getTotalCartAmount())}</p>
               </div>
               <hr />
               <div className="cart-total-details">
                 <p>Delivery Fee</p>
-                <p>${getTotalCartAmount() === 0 ? 0 : 2}</p>
+                <p>{formatCurrency(getTotalCartAmount() === 0 ? 0 : 2)}</p>
               </div>
               {promoData && (
                 <>
                   <hr />
                   <div className="cart-total-details discount">
                     <p>Discount ({promoData.promoCode})</p>
-                    <p>-${promoData.promoDiscount.toFixed(2)}</p>
+                    <p>-{formatCurrency(promoData.promoDiscount)}</p>
                   </div>
                 </>
               )}
@@ -292,10 +293,11 @@ const PlaceOrder = () => {
               <div className="cart-total-details">
                 <b>Total</b>
                 <b>
-                  ${promoData ? 
-                    Math.max(0, getTotalCartAmount() + (getTotalCartAmount() === 0 ? 0 : 2) - promoData.promoDiscount).toFixed(2) : 
-                    (getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2)
-                  }
+                  {formatCurrency(
+                    promoData 
+                      ? Math.max(0, getTotalCartAmount() + (getTotalCartAmount() === 0 ? 0 : 2) - promoData.promoDiscount)
+                      : (getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2)
+                  )}
                 </b>
               </div>
             </div>

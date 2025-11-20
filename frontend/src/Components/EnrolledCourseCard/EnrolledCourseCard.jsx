@@ -3,6 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { url } from '../../assets/frontend_assets/assets';
 import './EnrolledCourseCard.css';
 
+const resolveMediaUrl = (value, fallback) => {
+  if (!value || typeof value !== 'string') return fallback;
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    return value;
+  }
+  return `${url}/uploads/${value.replace(/^\/+/, '')}`;
+};
+
+const coursePlaceholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNvdXJzZSBJbWFnZTwvdGV4dD48L3N2Zz4=';
+const avatarPlaceholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNmMGYwZjAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+STwvdGV4dD48L3N2Zz4=';
+
 const EnrolledCourseCard = ({ enrollment }) => {
   const navigate = useNavigate();
 
@@ -43,9 +54,10 @@ const EnrolledCourseCard = ({ enrollment }) => {
     <div className="enrollment-card">
       <div className="enrollment-image-container">
         <img 
-          src={`${url}/uploads/${enrollment.course.image}`} 
-          alt={enrollment.course.title} 
+          src={resolveMediaUrl(enrollment.course.image, coursePlaceholder)} 
+          alt={enrollment.course.title || 'Course'} 
           className="enrollment-image"
+          onError={(e) => { e.target.src = coursePlaceholder; }}
         />
         <div 
           className="status-badge"
@@ -98,9 +110,10 @@ const EnrolledCourseCard = ({ enrollment }) => {
 
         <div className="enrollment-instructor">
           <img 
-            src={`${url}/uploads/${enrollment.course.instructor?.avatar || 'default-avatar.png'}`} 
+            src={resolveMediaUrl(enrollment.course.instructor?.avatar, avatarPlaceholder)} 
             alt={enrollment.course.instructor?.name || 'Instructor'}
             className="instructor-avatar"
+            onError={(e) => { e.target.src = avatarPlaceholder; }}
           />
           <div className="instructor-info">
             <span className="instructor-name">{enrollment.course.instructor?.name || 'Unknown Instructor'}</span>

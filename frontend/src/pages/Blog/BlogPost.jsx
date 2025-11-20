@@ -24,6 +24,12 @@ const BlogPost = () => {
     fetchReactions();
   }, [id]);
 
+  const resolveImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http')) return imagePath;
+    return `${url}/uploads/${imagePath}`;
+  };
+
   const fetchBlogPost = async () => {
     try {
       setLoading(true);
@@ -185,7 +191,7 @@ const BlogPost = () => {
       <div className="blog-post-content">
         <div className="post-image-container">
           <img 
-            src={`${url}/uploads/${post.image}`} 
+            src={resolveImageUrl(post.image)} 
             alt={post.title} 
             className="post-image"
             loading="lazy"

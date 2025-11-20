@@ -1,0 +1,420 @@
+/* ========== Layout & Container ========== */
+.enrolled-courses-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+/* ========== Header ========== */
+.enrolled-courses-header {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-text h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.header-text p {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.back-to-courses-btn {
+  background: #3b82f6;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.back-to-courses-btn:hover {
+  background: #2563eb;
+}
+
+/* ========== Loading & Error States ========== */
+.loading-message, .error-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.loading-message p {
+  font-size: 1rem;
+  color: #64748b;
+}
+
+.error-message h2 {
+  color: #ef4444;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.error-message button {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+/* ========== Empty State ========== */
+.no-enrollments-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.empty-state {
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 3rem 2rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.empty-state p {
+  color: #64748b;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.explore-courses-btn {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.explore-courses-btn:hover {
+  background: #2563eb;
+}
+
+/* ========== Enrollments Grid ========== */
+.enrollments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ========== Single Course Layout ========== */
+.enrollments-grid.single-course {
+  grid-template-columns: 50%;
+  justify-content: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========== Enrollment Card ========== */
+.enrollment-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.enrollment-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.enrollment-image-container {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.enrollment-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.enrollment-card:hover .enrollment-image {
+  transform: scale(1.05);
+}
+
+.status-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  color: #ffffff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.progress-overlay {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+}
+
+.progress-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progress-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* ========== Card Content ========== */
+.enrollment-content {
+  padding: 1.5rem;
+}
+
+.enrollment-category {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.category-tag,
+.course-level {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.category-tag {
+  background: #3b82f6;
+}
+
+.course-level {
+  background: #f59e0b;
+}
+
+.enrollment-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+.enrollment-description {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  height: 3rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.enrollment-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.meta-icon {
+  font-size: 0.875rem;
+}
+
+/* ========== Progress Section ========== */
+.progress-section {
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #3b82f6;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: center;
+}
+
+/* ========== Instructor Section ========== */
+.enrollment-instructor {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #f8fafc;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.instructor-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.instructor-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.instructor-name {
+  font-weight: 500;
+  color: #1e293b;
+  font-size: 0.875rem;
+}
+
+.instructor-title {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ========== Continue Learning Button ========== */
+.continue-learning-btn {
+  background: #3b82f6;
+  color: #ffffff;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.continue-learning-btn:hover {
+  background: #2563eb;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .enrolled-courses-container {
+    padding: 1rem;
+  }
+
+  .enrolled-courses-header {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-text h1 {
+    font-size: 1.875rem;
+  }
+
+  .enrollments-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .enrollments-grid.single-course {
+    max-width: 100%;
+  }
+
+  .enrollment-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .enrolled-courses-container {
+    padding: 0.75rem;
+  }
+
+  .enrolled-courses-header {
+    padding: 1rem;
+  }
+
+  .header-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .enrollment-content {
+    padding: 0.75rem;
+  }
+
+  .enrollment-title {
+    font-size: 1rem;
+  }
+} 

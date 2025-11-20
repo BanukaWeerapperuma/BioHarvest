@@ -3,9 +3,11 @@ import "./Cart.css";
 import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { assets } from "../../assets/frontend_assets/assets";
+import { formatCurrency } from "../../utils/price";
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart, getTotalCartAmount, url, token } = useContext(StoreContext);
+  const { cartItems, food_list, removeFromCart, addToCart, getTotalCartAmount, url, token } = useContext(StoreContext);
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoDiscount, setPromoDiscount] = useState(0);
@@ -14,6 +16,17 @@ const Cart = () => {
   const [promoLoading, setPromoLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  // Helper function to get image URL (handles both Cloudinary URLs and local paths)
+  const getImageUrl = (imgPath) => {
+    if (!imgPath) return '';
+    // If it's already a full URL (starts with http), return as is
+    if (imgPath.startsWith('http')) {
+      return imgPath;
+    }
+    // Otherwise, it's a local path
+    return url + "/uploads/" + imgPath;
+  };
 
   const handlePromoSubmit = async () => {
     if (!promoCode.trim()) {
@@ -60,7 +73,7 @@ const Cart = () => {
         setPromoDiscount(discount);
         setPromoApplied(true);
         setPromoId(response.data.promoId);
-        setPromoMessage(`Promo code "${response.data.code}" applied! You saved $${discount.toFixed(2)}`);
+        setPromoMessage(`Promo code "${response.data.code}" applied! You saved ${formatCurrency(discount)}`);
       } else {
         setPromoMessage(response.data.message || "Invalid promo code");
       }
@@ -125,11 +138,25 @@ const Cart = () => {
             return (
               <div key={item._id}> {/* Add unique key here */}
                 <div className="cart-items-title cart-items-item">
-                  <img src={url+"/uploads/"+item.image} alt="" />
+                  <img src={getImageUrl(item.image)} alt={item.name} />
                   <p>{item.name}</p>
-                  <p>$ {item.price}</p>
-                  <p>{cartItems[item._id]}</p>
-                  <p>$ {item.price * cartItems[item._id]}</p>
+                  <p>{formatCurrency(item.price)}</p>
+                  <div className="cart-item-quantity">
+                    <img 
+                      onClick={() => removeFromCart(item._id)} 
+                      src={assets.remove_icon_red} 
+                      alt="Decrease quantity" 
+                      className="quantity-btn"
+                    />
+                    <p>{cartItems[item._id]}</p>
+                    <img 
+                      onClick={() => addToCart(item._id)} 
+                      src={assets.add_icon_green} 
+                      alt="Increase quantity" 
+                      className="quantity-btn"
+                    />
+                  </div>
+                  <p>{formatCurrency(item.price * cartItems[item._id])}</p>
                   <p onClick={() => removeFromCart(item._id)} className="cross">
                     x
                   </p>
@@ -147,26 +174,26 @@ const Cart = () => {
           <div>
             <div className="cart-total-details">
               <p>Subtotal</p>
-              <p>$ {getSubtotal()}</p>
+              <p>{formatCurrency(getSubtotal())}</p>
             </div>
             <hr />
             <div className="cart-total-details">
               <p>Delivery Fee</p>
-              <p>$ {getDeliveryFee()}</p>
+              <p>{formatCurrency(getDeliveryFee())}</p>
             </div>
             {promoApplied && (
               <>
                 <hr />
                 <div className="cart-total-details discount">
                   <p>Discount</p>
-                  <p>-$ {getDiscount()}</p>
+                  <p>-{formatCurrency(getDiscount())}</p>
                 </div>
               </>
             )}
             <hr />
             <div className="cart-total-details">
               <b>Total</b>
-              <b>$ {getFinalTotal()}</b>
+              <b>{formatCurrency(getFinalTotal())}</b>
             </div>
           </div>
           <button onClick={() => navigate("/order", { 

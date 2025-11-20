@@ -9,8 +9,24 @@ const Community = () => {
   const [loading, setLoading] = useState(true)
   const [newPost, setNewPost] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [userProfiles, setUserProfiles] = useState({})
+    // no per-user fetch required - backend now includes author profileImage on posts
+    const [userProfiles, setUserProfiles] = useState({})
   const [expandedComments, setExpandedComments] = useState({})
+
+  // Default inline avatar (SVG) used when a user has no profile image
+  const defaultAvatar = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAzNSAzNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjM1IiBoZWlnaHQ9IjM1IiByeD0iMTcuNSIgZmlsbD0iI0U1RTdFQiIvPgo8Y2lyY2xlIGN4PSIxNy41IiBjeT0iMTMiIHI9IjYiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTUuODMzIDMwLjY2N0M1LjgzMyAyNi4wNTc2IDkuNTcyNiAyMi4zMzMgMTQuMTY2NyAyMi4zMzNIMjAuODMzQzI1LjQyNzQgMjIuMzMzIDI5LjE2NjcgMjYuMDU3NiAyOS4xNjY3IDMwLjY2N1YzNUg1LjgzM1YzMC42NjdaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
+
+  // Normalize profile image value to a usable src URL.
+  // Accepts full URL (http/https), absolute path (starts with '/'), or filename stored in uploads.
+  const getProfileImageUrl = (img) => {
+    if (!img) return defaultAvatar;
+    const trimmed = String(img).trim();
+    if (!trimmed) return defaultAvatar;
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+    if (trimmed.startsWith('/')) return `${url}${trimmed}`;
+    // Otherwise assume it's a filename saved under /uploads
+    return `${url}/uploads/${trimmed}`;
+  };
 
   // Toggle comments visibility for a specific post
   const toggleComments = (postId) => {
@@ -52,18 +68,6 @@ const Community = () => {
       if (response.data && response.data.success) {
         console.log('Fetched community posts:', response.data.posts)
         setPosts(response.data.posts)
-        
-        // Fetch profile images for all authors
-        const uniqueUserIds = [...new Set([
-          ...response.data.posts.map(post => post.author),
-          ...response.data.posts.flatMap(post => post.comments.map(comment => comment.author))
-        ])];
-        
-        for (const userId of uniqueUserIds) {
-          if (userId && !userProfiles[userId]) {
-            await fetchUserProfile(userId);
-          }
-        }
       } else {
         console.log('No posts found or API error')
         setPosts([])
@@ -192,11 +196,11 @@ const Community = () => {
             <div className="post-form">
               <div className="user-info">
                 <img 
-                  src={userProfile?.profileImage || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAzNSAzNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjM1IiBoZWlnaHQ9IjM1IiByeD0iMTcuNSIgZmlsbD0iI0U1RTdFQiIvPgo8Y2lyY2xlIGN4PSIxNy41IiBjeT0iMTMiIHI9IjYiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTUuODMzIDMwLjY2N0M1LjgzMyAyNi4wNTc2IDkuNTcyNiAyMi4zMzMgMTQuMTY2NyAyMi4zMzNIMjAuODMzQzI1LjQyNzQgMjIuMzMzIDI5LjE2NjcgMjYuMDU3NiAyOS4xNjY3IDMwLjY2N1YzNUg1LjgzM1YzMC42NjdaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
+                  src={getProfileImageUrl(userProfile?.profileImage)} 
                   alt="Profile" 
                   className="user-avatar"
                   onError={(e) => {
-                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAzNSAzNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjM1IiBoZWlnaHQ9IjM1IiByeD0iMTcuNSIgZmlsbD0iI0U1RTdFQiIvPgo8Y2lyY2xlIGN4PSIxNy41IiBjeT0iMTMiIHI9IjYiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTUuODMzIDMwLjY2N0M1LjgzMyAyNi4wNTc2IDkuNTcyNiAyMi4zMzMgMTQuMTY2NyAyMi4zMzNIMjAuODMzQzI1LjQyNzQgMjIuMzMzIDI5LjE2NjcgMjYuMDU3NiAyOS4xNjY3IDMwLjY2N1YzNUg1LjgzM1YzMC42NjdaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
+                    e.target.src = defaultAvatar;
                   }}
                 />
                 <span className="username">{userProfile?.name || 'User'}</span>
@@ -241,11 +245,11 @@ const Community = () => {
               <div key={post._id} className="post-card">
                 <div className="post-header">
                   <img 
-                    src={userProfiles[post.author] ? `${url}/uploads/${userProfiles[post.author]}` : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAzNSAzNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjM1IiBoZWlnaHQ9IjM1IiByeD0iMTcuNSIgZmlsbD0iI0U1RTdFQiIvPgo8Y2lyY2xlIGN4PSIxNy41IiBjeT0iMTMiIHI9IjYiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTUuODMzIDMwLjY2N0M1LjgzMyAyNi4wNTc2IDkuNTcyNiAyMi4zMzMgMTQuMTY2NyAyMi4zMzNIMjAuODMzQzI1LjQyNzQgMjIuMzMzIDI5LjE2NjcgMjYuMDU3NiAyOS4xNjY3IDMwLjY2N1YzNUg1LjgzM1YzMC42NjdaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
+                    src={ getProfileImageUrl(post.authorProfileImage) } 
                     alt="Author" 
                     className="author-avatar"
                     onError={(e) => {
-                      e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAzNSAzNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjM1IiBoZWlnaHQ9IjM1IiByeD0iMTcuNSIgZmlsbD0iI0U1RTdFQiIvPgo8Y2lyY2xlIGN4PSIxNy41IiBjeT0iMTMiIHI9IjYiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTUuODMzIDMwLjY2N0M1LjgzMyAyNi4wNTc2IDkuNTcyNiAyMi4zMzMgMTQuMTY2NyAyMi4zMzNIMjAuODMzQzI1LjQyNzQgMjIuMzMzIDI5LjE2NjcgMjYuMDU3NiAyOS4xNjY3IDMwLjY2N1YzNUg1LjgzM1YzMC42NjdaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
+                      e.target.src = defaultAvatar;
                     }}
                   />
                   <div className="post-info">
@@ -292,11 +296,11 @@ const Community = () => {
                           <div key={index} className="comment">
                             <div className="comment-header">
                               <img 
-                                src={userProfiles[comment.author] ? `${url}/uploads/${userProfiles[comment.author]}` : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAzNSAzNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjM1IiBoZWlnaHQ9IjM1IiByeD0iMTcuNSIgZmlsbD0iI0U1RTdFQiIvPgo8Y2lyY2xlIGN4PSIxNy41IiBjeT0iMTMiIHI9IjYiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTUuODMzIDMwLjY2N0M1LjgzMyAyNi4wNTc2IDkuNTcyNiAyMi4zMzMgMTQuMTY2NyAyMi4zMzNIMjAuODMzQzI1LjQyNzQgMjIuMzMzIDI5LjE2NjcgMjYuMDU3NiAyOS4xNjY3IDMwLjY2N1YzNUg1LjgzM1YzMC42NjdaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo='} 
+                                src={ getProfileImageUrl(comment.authorProfileImage) } 
                                 alt="Commenter" 
                                 className="comment-avatar"
                                 onError={(e) => {
-                                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzUiIGhlaWdodD0iMzUiIHZpZXdCb3g9IjAgMCAzNSAzNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjM1IiBoZWlnaHQ9IjM1IiByeD0iMTcuNSIgZmlsbD0iI0U1RTdFQiIvPgo8Y2lyY2xlIGN4PSIxNy41IiBjeT0iMTMiIHI9IjYiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTUuODMzIDMwLjY2N0M1LjgzMyAyNi4wNTc2IDkuNTcyNiAyMi4zMzMgMTQuMTY2NyAyMi4zMzNIMjAuODMzQzI1LjQyNzQgMjIuMzMzIDI5LjE2NjcgMjYuMDU3NiAyOS4xNjY3IDMwLjY2N1YzNUg1LjgzM1YzMC42NjdaIiBmaWxsPSIjOUNBM0FGIi8+Cjwvc3ZnPgo=';
+                                  e.target.src = defaultAvatar;
                                 }}
                               />
                               <div className="comment-info">

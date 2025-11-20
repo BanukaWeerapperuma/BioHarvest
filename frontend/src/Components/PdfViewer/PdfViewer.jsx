@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+// Use Vite-friendly static imports for pdf.js and the worker URL.
+// Make sure to install `pdfjs-dist`: `npm install pdfjs-dist`
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+import pdfWorkerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
 import './PdfViewer.css';
 
 const PdfViewer = ({ pdfUrl, fileName, onClose }) => {
@@ -8,6 +12,12 @@ const PdfViewer = ({ pdfUrl, fileName, onClose }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [blobUrl, setBlobUrl] = useState(null);
+  const [resolvedFileName, setResolvedFileName] = useState(null);
+  const canvasRef = useRef(null);
+  const [pdfDoc, setPdfDoc] = useState(null);
+  const [pdfJsAvailable, setPdfJsAvailable] = useState(false);
+  const renderTaskRef = useRef(null);
 
   useEffect(() => {
     // Detect mobile device
@@ -27,6 +37,176 @@ const PdfViewer = ({ pdfUrl, fileName, onClose }) => {
     setTotalPages(0);
   }, [pdfUrl, isMobile]);
 
+  // Helper: parse filename from Content-Disposition header
+  const parseFilenameFromContentDisposition = (header) => {
+    if (!header) return null;
+    // Try filename*=UTF-8''encoded or filename="name" or filename=name
+    const fileNameStarMatch = header.match(/filename\*=(?:UTF-8'')?([^;]+)/i);
+    if (fileNameStarMatch && fileNameStarMatch[1]) {
+      try {
+        return decodeURIComponent(fileNameStarMatch[1].trim().replace(/"/g, ''));
+      } catch (_) {
+        return fileNameStarMatch[1].trim().replace(/"/g, '');
+      }
+    }
+    const fileNameMatch = header.match(/filename="?([^";]+)"?/i);
+    if (fileNameMatch && fileNameMatch[1]) return fileNameMatch[1].trim();
+    return null;
+  };
+
+  // Fetch pdfUrl as blob and create object URL so iframe can display it even
+  // if Cloudinary sends a content-disposition attachment header.
+  useEffect(() => {
+    if (!pdfUrl) return;
+
+    // If it's already a blob url, just use it
+    if (pdfUrl.startsWith('blob:')) {
+      setBlobUrl(pdfUrl);
+      setResolvedFileName(fileName || null);
+      setLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    let didCancel = false;
+
+    const doFetch = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(pdfUrl, { signal: controller.signal });
+        if (!res.ok) throw new Error(`Network response not ok: ${res.status}`);
+        // Try to derive filename from headers
+        const contentDisp = res.headers.get('content-disposition');
+        const headerName = parseFilenameFromContentDisposition(contentDisp);
+        // Fallback: try to extract name from URL
+        const urlName = (() => {
+          try {
+            const parts = pdfUrl.split('/');
+            const last = parts.pop() || parts.pop();
+            return last ? decodeURIComponent(last.split('?')[0]) : null;
+          } catch (_) { return null; }
+        })();
+
+        const blob = await res.blob();
+        if (didCancel) return;
+        const newBlobUrl = URL.createObjectURL(blob);
+        setBlobUrl(prev => {
+          if (prev && prev !== newBlobUrl) URL.revokeObjectURL(prev);
+          return newBlobUrl;
+        });
+        setResolvedFileName(headerName || fileName || urlName || 'document.pdf');
+        setLoading(false);
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        console.error('Error fetching PDF blob:', err);
+        if (!didCancel) {
+          setError('Failed to load PDF. Please try downloading the file instead.');
+          setLoading(false);
+        }
+      }
+    };
+
+    doFetch();
+
+    return () => {
+      didCancel = true;
+      controller.abort();
+    };
+  }, [pdfUrl, fileName]);
+
+  // Revoke blobUrl on unmount
+  useEffect(() => {
+    return () => {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
+  }, [blobUrl]);
+
+  // Load pdf.js dynamically and open the document when blobUrl/pdfUrl is ready
+  useEffect(() => {
+    let cancelled = false;
+    let loadingTask = null;
+
+    const loadPdf = async () => {
+      const src = blobUrl || pdfUrl;
+      if (!src) return;
+
+      try {
+        // Configure worker from the imported worker URL (Vite provides this URL)
+        if (pdfjsLib && pdfWorkerUrl) {
+          pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+        }
+
+        setPdfJsAvailable(true);
+        loadingTask = pdfjsLib.getDocument(src);
+        const doc = await loadingTask.promise;
+        if (cancelled) return;
+        setPdfDoc(doc);
+        setTotalPages(doc.numPages || 0);
+      } catch (err) {
+        console.error('pdf.js load error:', err);
+        setPdfJsAvailable(false);
+        setPdfDoc(null);
+      }
+    };
+
+    loadPdf();
+
+    return () => {
+      cancelled = true;
+      if (loadingTask && loadingTask.destroy) loadingTask.destroy();
+    };
+  }, [blobUrl, pdfUrl]);
+
+  // Render current page to canvas when pdfDoc/currentPage/zoom change
+  useEffect(() => {
+    let cancelled = false;
+    const renderPage = async (pageNum) => {
+      if (!pdfDoc || !canvasRef.current) return;
+      try {
+        const page = await pdfDoc.getPage(pageNum);
+        if (cancelled) return;
+        const viewport = page.getViewport({ scale: zoom / 100 });
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+
+        // Cancel previous render if any
+        if (renderTaskRef.current && renderTaskRef.current.cancel) {
+          try { renderTaskRef.current.cancel(); } catch (e) {}
+        }
+
+        const renderContext = {
+          canvasContext: context,
+          viewport,
+        };
+        const renderTask = page.render(renderContext);
+        renderTaskRef.current = renderTask;
+        await renderTask.promise;
+        renderTaskRef.current = null;
+        if (cancelled) return;
+      } catch (err) {
+        if (err && err.name === 'RenderingCancelledException') return;
+        console.error('Error rendering PDF page:', err);
+      }
+    };
+
+    if (pdfDoc) {
+      // clamp currentPage
+      const p = Math.max(1, Math.min(currentPage, pdfDoc.numPages || totalPages || 1));
+      setCurrentPage(p);
+      renderPage(p);
+    }
+
+    return () => {
+      cancelled = true;
+      if (renderTaskRef.current && renderTaskRef.current.cancel) {
+        try { renderTaskRef.current.cancel(); } catch (e) {}
+      }
+    };
+  }, [pdfDoc, currentPage, zoom]);
+
   const handleLoad = () => {
     setLoading(false);
     setError(null);
@@ -39,23 +219,63 @@ const PdfViewer = ({ pdfUrl, fileName, onClose }) => {
 
   const handleDownload = () => {
     try {
-      const link = document.createElement('a');
-      link.href = pdfUrl;
-      link.download = fileName || 'document.pdf';
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const ensureAndDownload = async () => {
+        let href = blobUrl;
+        if (!href) {
+          // fetch the PDF as blob now (useful when server forces attachment)
+          const res = await fetch(pdfUrl);
+          if (!res.ok) throw new Error(`Network response not ok: ${res.status}`);
+          const b = await res.blob();
+          href = URL.createObjectURL(b);
+          setBlobUrl(prev => {
+            if (prev && prev !== href) URL.revokeObjectURL(prev);
+            return href;
+          });
+          // try to parse filename from headers if available
+          const contentDisp = res.headers.get('content-disposition');
+          const headerName = parseFilenameFromContentDisposition(contentDisp);
+          setResolvedFileName(headerName || resolvedFileName || fileName || 'document.pdf');
+        }
+
+        const link = document.createElement('a');
+        link.href = href;
+        link.download = resolvedFileName || fileName || 'document.pdf';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+
+      ensureAndDownload();
     } catch (error) {
       console.error('Download error:', error);
       // Fallback: open in new tab
-      window.open(pdfUrl, '_blank');
+      window.open(blobUrl || pdfUrl, '_blank');
     }
   };
 
   const handleOpenInNewTab = () => {
-    window.open(pdfUrl, '_blank');
+    window.open(blobUrl || pdfUrl, '_blank');
+  };
+
+  // Allow user to open a local PDF file from disk into the viewer
+  const fileInputRef = useRef(null);
+  const handleOpenLocalClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
+
+  const handleLocalFileChange = (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const url = URL.createObjectURL(f);
+    setBlobUrl(prev => {
+      if (prev && prev !== url) URL.revokeObjectURL(prev);
+      return url;
+    });
+    setResolvedFileName(f.name || 'document.pdf');
+    setLoading(false);
+    setError(null);
   };
 
   const handleBackdropClick = (e) => {
@@ -117,11 +337,12 @@ const PdfViewer = ({ pdfUrl, fileName, onClose }) => {
 
   // Mobile-specific PDF URL with better mobile parameters
   const getMobilePdfUrl = () => {
+    const base = blobUrl || pdfUrl || '';
+    if (!base) return '';
     if (isMobile) {
-      // For mobile, use simpler parameters that work better
-      return `${pdfUrl}#view=FitH&scrollbar=1`;
+      return `${base}#view=FitH&scrollbar=1`;
     }
-    return `${pdfUrl}#toolbar=1&navpanes=1&scrollbar=1&zoom=${zoom}&page=${currentPage}`;
+    return `${base}#toolbar=1&navpanes=1&scrollbar=1&zoom=${zoom}&page=${currentPage}`;
   };
 
   return (
@@ -133,6 +354,20 @@ const PdfViewer = ({ pdfUrl, fileName, onClose }) => {
             {isMobile && <span className="mobile-indicator">📱 Mobile View</span>}
           </div>
           <div className="pdf-viewer-actions">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              onChange={handleLocalFileChange}
+            />
+            <button
+              className="pdf-open-local-btn"
+              onClick={handleOpenLocalClick}
+              title="Open local PDF"
+            >
+              📂 Open Local
+            </button>
             {!isMobile && (
               <div className="pdf-zoom-controls">
                 <button 

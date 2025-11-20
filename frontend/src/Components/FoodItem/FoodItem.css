@@ -161,6 +161,31 @@
     font-size: 8px;
 }
 
+.food-item-price-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.more-info-btn-small {
+    padding: 4px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.more-info-btn-small:hover {
+    background-color: #45a049;
+}
+
 .view-certificate-btn{
     width: 100%;
     padding: 10px;
@@ -268,6 +293,20 @@
     font-weight: 500;
 }
 
+.not-verified-info{
+    margin-top: 15px;
+    padding: 15px;
+    background: #FFEBEE;
+    border-radius: 8px;
+    border-left: 4px solid #F44336;
+}
+
+.not-verified-info p{
+    color: #C62828;
+    margin: 5px 0;
+    font-weight: 500;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -306,3 +345,28 @@
         padding: 15px;
     }
 }
+
+/* Rating display styles (read-only) */
+.food-rating-wrapper{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.food-rating-stars{
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+.food-rating-star{
+    font-size: 16px;
+    color: #FFD600;
+    line-height: 1;
+}
+.food-rating-star.inactive{
+    color: #E0E0E0;
+}
+.food-review-count{
+    font-size: 12px;
+    color: #666;
+}
+

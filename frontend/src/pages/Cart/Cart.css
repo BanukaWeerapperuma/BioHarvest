@@ -34,6 +34,31 @@
     border-radius: 4px;
 }
 
+.cart-item-quantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.cart-item-quantity p {
+    margin: 0;
+    min-width: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.cart-item-quantity .quantity-btn {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.cart-item-quantity .quantity-btn:hover {
+    transform: scale(1.1);
+}
+
 .cart hr{
     height: 1px;
     border-color: #e2e2e2;

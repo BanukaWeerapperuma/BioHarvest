@@ -9,7 +9,7 @@ import './App.css'
 import { useState } from 'react'
 import LoginPopUp from './Components/LoginPopUp/LoginPopUp'
 import Verify from './pages/Verify/Verify'
-import MyOrders from './pages/Myorders/MyOrders.jsx'
+import MyOrders from './pages/Myorders/MyOrders'
 import Learn from './pages/Learn/Learn'
 import CourseDashboard from './pages/Learn/CourseDashboard'
 import EnrolledCourses from './pages/Learn/EnrolledCourses'
@@ -22,6 +22,7 @@ import Profile from './pages/Profile/Profile'
 import NotFound from './pages/NotFound/NotFound'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import WhatsAppBubble from './Components/WhatsAppBubble/WhatsAppBubble'
 
 const App = () => {
 
@@ -54,6 +55,7 @@ const App = () => {
       </Routes>
     </div>
     <Footer/>
+    <WhatsAppBubble/>
     <ToastContainer 
       position="top-right"
       autoClose={3000}

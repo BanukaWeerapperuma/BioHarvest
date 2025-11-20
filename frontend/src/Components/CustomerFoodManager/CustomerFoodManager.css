@@ -160,6 +160,70 @@
     border-color: #4CAF50;
 }
 
+/* Contact Info Section */
+.add-contact-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.add-phone,
+.add-quantity {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.add-phone p,
+.add-quantity p {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.add-phone input,
+.add-quantity input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.add-phone input:focus,
+.add-quantity input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* Address Section */
+.add-address {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.add-address p {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.add-address textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.add-address textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
 /* SLS Certificate Upload */
 .add-sls-certificate {
     display: flex;
@@ -458,6 +522,20 @@
     color: #2e7d32;
 }
 
+.not-verified-info {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8d7da;
+    border-radius: 6px;
+    border-left: 4px solid #dc3545;
+}
+
+.not-verified-info p {
+    margin: 5px 0;
+    font-size: 12px;
+    color: #721c24;
+}
+
 @media (max-width: 768px) {
     .customer-food-manager {
         width: 95%;
@@ -465,6 +543,10 @@
     }
     
     .add-category-price {
+        grid-template-columns: 1fr;
+    }
+    
+    .add-contact-info {
         grid-template-columns: 1fr;
     }
     
