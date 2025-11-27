@@ -1,18 +1,12 @@
 import express from "express";
-import { addFood, listFood, removeFood, adminRemoveFood, adminAddFood, customerAddFood, customerUpdateFood, customerRemoveFood, getCustomerFood, adminListAllFood, getSlsCertificate, verifySlsCertificate } from "../controllers/foodController.js";
+import { addFood, listFood, removeFood, adminRemoveFood, adminAddFood, customerAddFood, customerUpdateFood, customerRemoveFood, getCustomerFood, adminListAllFood, uploadSLSCertificate, getSLSCertificate, deleteSLSCertificate, verifySLSCertificate, addReview, editReview, deleteReview, getMyReviews } from "../controllers/foodController.js";
 import multer from "multer";
 import authMiddleware from "../middleware/auth.js";
 
 const foodRouter = express.Router();
 
-// Image Storage Engine
-
-const storage= multer.diskStorage({
-    destination:"uploads",
-    filename:(req,file,cb)=>{
-        return cb(null,`${Date.now()}${file.originalname}`)
-    }
-})
+// Configure multer to use memory storage for Cloudinary uploads
+const storage = multer.memoryStorage();
 
 const upload= multer({
     storage: storage,
@@ -32,27 +26,35 @@ foodRouter.post("/add",upload.single("image"),authMiddleware,addFood);
 foodRouter.get("/list",listFood);
 foodRouter.post("/remove",authMiddleware,removeFood);
 foodRouter.post("/admin/remove",adminRemoveFood);
-foodRouter.post("/admin/add", upload.fields([
-  { name: "image", maxCount: 1 },
-  { name: "slsCertificate", maxCount: 1 }
-]), adminAddFood);
+foodRouter.post(
+  "/admin/add",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "certificate", maxCount: 1 },
+  ]),
+  adminAddFood
+);
 foodRouter.get("/admin/list-all",adminListAllFood);
 
-// SLS Certificate routes
-foodRouter.get("/:id/sls-certificate", getSlsCertificate);
-foodRouter.put("/:id/sls-certificate/verify", authMiddleware, verifySlsCertificate);
-
 // Customer food management routes
-foodRouter.post("/customer/add", upload.fields([
-  { name: "image", maxCount: 1 },
-  { name: "slsCertificate", maxCount: 1 }
-]), authMiddleware, customerAddFood);
-foodRouter.put("/customer/update", upload.fields([
-  { name: "image", maxCount: 1 },
-  { name: "slsCertificate", maxCount: 1 }
-]), authMiddleware, customerUpdateFood);
+// Allow both image and certificate to be uploaded together
+foodRouter.post("/customer/add",upload.fields([{ name: 'image', maxCount: 1 }, { name: 'certificate', maxCount: 1 }]),authMiddleware,customerAddFood);
+foodRouter.put("/customer/update",upload.single("image"),authMiddleware,customerUpdateFood);
 foodRouter.post("/customer/remove",authMiddleware,customerRemoveFood);
 foodRouter.get("/customer/list",authMiddleware,getCustomerFood);
+
+// SLS Certificate routes (must be before /list route to avoid conflicts)
+foodRouter.post("/:foodId/sls-certificate", upload.single("certificate"), authMiddleware, uploadSLSCertificate);
+foodRouter.get("/:foodId/sls-certificate", authMiddleware, getSLSCertificate);
+foodRouter.delete("/:foodId/sls-certificate", authMiddleware, deleteSLSCertificate);
+foodRouter.put("/:foodId/sls-certificate/verify", authMiddleware, verifySLSCertificate);
+
+// Review route - only users who purchased the item may post a review for that order
+foodRouter.post("/:foodId/review", authMiddleware, addReview);
+foodRouter.put('/:foodId/review/:reviewId', authMiddleware, editReview);
+foodRouter.delete('/:foodId/review/:reviewId', authMiddleware, deleteReview);
+// Get current user's reviews for this food
+foodRouter.get('/:foodId/reviews/me', authMiddleware, getMyReviews);
 
 // Error handling middleware for multer
 foodRouter.use((error, req, res, next) => {
