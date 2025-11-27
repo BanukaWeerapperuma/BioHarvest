@@ -1,0 +1,111 @@
+.add{
+    width: 70%;
+    margin-left: max(5vw,25px);
+    margin-top: 50px;
+    color: #6D6D6D;
+    font-size: 16px;
+}
+.add form{
+   gap: 20px;
+}
+.add-img-upload img{
+    width: 120px;
+}
+.add-product-name, .add-product-description{
+    width: max(40%,280px);
+}
+.add-product-name input ,.add-product-description textarea{
+    padding: 10px 10px;
+}
+.add-category-price{
+    display: flex;
+    gap: 30px;
+}
+.add-category-price select,.add-category-price input{
+    max-width: 120px;
+    padding: 10px;
+}
+.add-certificate-upload{
+    background: #f8f9fb;
+    border: 1px dashed #cbd5f5;
+    border-radius: 12px;
+    padding: 16px;
+    gap: 12px;
+}
+.certificate-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+.certificate-chip{
+    font-size: 12px;
+    font-weight: 600;
+    color: #2563eb;
+    background: #e0edff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+.certificate-dropzone{
+    border: 1px dashed #a5b4fc;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    background: #fff;
+}
+.certificate-dropzone:hover{
+    border-color: #6366f1;
+}
+.certificate-dropzone.has-file{
+    border-color: #22c55e;
+    background: #f0fdf4;
+}
+.certificate-placeholder img{
+    width: 50px;
+    margin-bottom: 10px;
+    opacity: 0.7;
+}
+.certificate-file{
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #1f2937;
+    font-weight: 600;
+}
+.certificate-file .file-size{
+    color: #6b7280;
+    font-weight: 500;
+}
+.certificate-hint{
+    font-size: 13px;
+    color: #4b5563;
+}
+.add-btn{
+    max-width: 120px;
+    border: none;
+    padding: 10px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.add-btn:hover:not(:disabled) {
+    background-color: #333;
+}
+.add-btn:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+@media (max-width:400px) {
+    .add{
+        margin-left: 15px;
+    }
+    .add-product-name, .add-product-description{
+        width: max(40%,300px);
+    }
+}

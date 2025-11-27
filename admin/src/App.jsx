@@ -15,6 +15,7 @@ import Analytics from './pages/Analytics/Analytics'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Login from './components/Login/Login'
+import ResetCredentials from './components/ResetCredentials/ResetCredentials'
 import { StoreContext } from './context/StoreContext'
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
         <div className="main-content">
           <Routes>
             <Route path="/" element={<Login/>}/>
+            <Route path="/reset-credentials" element={token && admin ? <ResetCredentials/> : <Login/>}/>
             <Route path="/add" element={<Add/>}/>
             <Route path="/list" element={<List/>}/>
             <Route path="/orders" element={<Orders/>}/>
