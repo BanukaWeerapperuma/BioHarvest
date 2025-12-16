@@ -107,21 +107,81 @@ BioHarvest follows the **MERN Stack Architecture**:
 ---
 ---
 
-##📌 Screenshots
+## 📸 Screenshots (Click to Zoom)
 
-### System Architecture
+<table>
+  <tr>
+    <td align="center">
+      <b>Home Page</b><br>
+      <a href="./screenshots/Hero.jpg">
+        <img src="./screenshots/Hero.jpg" width="400"/>
+      </a>
+    </td>
+    <td align="center">
+      <b>Explore Menu</b><br>
+      <a href="./screenshots/OrganicItemsInterface.jpg">
+        <img src="./screenshots/OrganicItemsInterface.jpg" width="400"/>
+      </a>
+    </td>
+  </tr>
 
+  <tr>
+    <td align="center">
+      <b>Cart Page</b><br>
+      <a href="./screenshots/cart.jpg">
+        <img src="./screenshots/cart.jpg" width="400"/>
+      </a>
+    </td>
+    <td align="center">
+      <b>Learning Page</b><br>
+      <a href="./screenshots/LearnPage.jpg">
+        <img src="./screenshots/LearnPage.jpg" width="400"/>
+      </a>
+    </td>
+  </tr>
 
+  <tr>
+    <td align="center">
+      <b>Community</b><br>
+      <a href="./screenshots/Community.jpg">
+        <img src="./screenshots/Community.jpg" width="400"/>
+      </a>
+    </td>
+    <td align="center">
+      <b>Blog Interfaces</b><br>
+      <a href="./screenshots/BlogInterfaces.jpg">
+        <img src="./screenshots/BlogInterfaces.jpg" width="400"/>
+      </a>
+    </td>
+  </tr>
 
-```md
-![Home Page](screenshots/Hero.jpg)
-![Explore Menu](screenshots/OrganicItemsInterface.jpg)
-![Cart Page](screenshots/cart.jpg)
-![Payment](screenshots/payment.png)
-![Learning Page](screenshots/LearnPage.jpg)
-![Community](screenshots/Community.jpg)
-![BlogInterfaces](screenshots/BlogInterfaces.jpg)
-![Order History](screenshots/OrderHistory.jpg)
-![Admin Certificate Verification ](screenshots/CertificateVerification.jpg)
-![Admin Analysis Usage](screenshots/AnalysisUsage.jpg)
+  <tr>
+    <td align="center">
+      <b>Order History</b><br>
+      <a href="./screenshots/OrderHistory.jpg">
+        <img src="./screenshots/OrderHistory.jpg" width="400"/>
+      </a>
+    </td>
+    <td align="center">
+      <b>Certificate Verification</b><br>
+      <a href="./screenshots/CertificateVerification.jpg">
+        <img src="./screenshots/CertificateVerification.jpg" width="400"/>
+      </a>
+    </td>
+  </tr>
 
+  <tr>
+    <td align="center">
+      <b>Admin Analysis Usage</b><br>
+      <a href="./screenshots/AnalysisUsage.jpg">
+        <img src="./screenshots/AnalysisUsage.jpg" width="400"/>
+      </a>
+    </td>
+    <td align="center">
+      <b>System Architecture</b><br>
+      <a href="./screenshots/SystemArchitecture.png">
+        <img src="./screenshots/SystemArchitecture.png" width="400"/>
+      </a>
+    </td>
+  </tr>
+</table>
