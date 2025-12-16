@@ -1,4 +1,5 @@
 <img width="782" height="928" alt="image" src="https://github.com/user-attachments/assets/2751043b-b8b6-48f8-9b72-af8c72220623" />
+
 # BioHarvest – Organic Lifestyle & Learning Platform
 
 BioHarvest is a **full-stack MERN web application** focused on promoting **organic living, healthy lifestyles, and sustainable food practices**.  
