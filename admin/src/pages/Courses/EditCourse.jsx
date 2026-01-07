@@ -52,7 +52,7 @@ const EditCourse = () => {
     isActive: true
   });
 
-  const url = 'http://localhost:4000';
+  const url = 'https://bioharvest-lemon.vercel.app';
 
   useEffect(() => {
     fetchCourse();

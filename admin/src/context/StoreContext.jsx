@@ -8,7 +8,7 @@ const StoreContextProvider = (props) => {
   const [admin, setAdmin] = useState(false);
   
   // Backend URL - change this to match your backend server
-  const url = "http://localhost:4000";
+  const url = "https://bioharvest-lemon.vercel.app";
 
   useEffect(() => {
     async function loadData() {

@@ -90,4 +90,4 @@ export const menu_list = [
 
 
 
-export const url = 'http://localhost:4000'
+export const url = 'https://bioharvest-lemon.vercel.app'

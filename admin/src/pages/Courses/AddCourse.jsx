@@ -48,7 +48,7 @@ const AddCourse = () => {
     learningOutcomes: []
   });
 
-  const url = 'http://localhost:4000';
+  const url = 'https://bioharvest-lemon.vercel.app';
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
